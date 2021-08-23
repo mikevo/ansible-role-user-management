@@ -1,0 +1,16 @@
+---
+- name: setup forward mail address | find home dir
+  user:
+    name: "{{ item.key }}"
+    state: present
+  register: currently_registered_user
+
+- name: setup forward mail address | add address to  ~/.forward file
+  lineinfile:
+    path: "{{ currently_registered_user.home }}/.forward"
+    regexp: ".*@.*"
+    line: "{{ user_management_users[item.key].mail }}"
+    state: present
+    owner: "{{ item.key }}"
+    group: "{{ currently_registered_user.group }}"
+    create: yes

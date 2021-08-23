@@ -1,0 +1,47 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    user_management_groups:
+      - name: admins
+      - name: sudo
+        system: yes
+      - name: sysops
+        gid: 20000
+      - name: test
+        state: absent
+
+    user_management_sudo_groups:
+      sysops: present
+
+    user_management_users:
+      ansible:
+        uid: 10000
+        comment: "Default user 1"
+        group: sysops
+        groups:
+          - sudo
+          - admins
+        shell: "/bin/bash"  # optional
+        pub_key: "ssh-rsa ..."
+        mail: "ansible@example.com"  # optional
+        update_password: on_create  # optional
+      ansible2:
+        uid: 10001
+        comment: "Default user 2"
+        group: sysops
+        groups:
+          - sudo
+        shell: "/bin/bash"  # optional
+        pub_key: "ssh-rsa ..."
+        mail: "ansible1@example.com"  # optional
+
+    user_management_machine_users:
+      ansible: present
+      ansible2: absent
+
+  tasks:
+    - name: "Include user-management"
+      include_role:
+        name: "user-management"

@@ -1,0 +1,45 @@
+---
+# defaults file for user-management
+
+# defines all known users.
+user_management_users: {}
+  # ansible:
+  #   uid: 10000
+  #   comment: "Default user"
+  #   group: sysops
+  #   groups:
+  #     - sudo
+  #   shell: "/bin/bash"  # optional
+  #   pub_key: "ssh-rsa ..."
+  #   mail: "ansible@example.com"  # optional
+  #   update_password: on_create  # optional
+
+# defines all groups
+user_management_groups: []
+  # - name: admins
+  # - name: sudo
+  #   system: yes
+  # - name: sysops
+  #   gid: 20000
+  # - name: test
+  #   state: absent
+
+# adds/removes groups to sudoers
+user_management_sudo_groups: {}
+  # sysops: present
+  # sysops: absent
+
+
+# define default state (present/absent) of users on machines
+user_management_machine_users: {}
+  # ansible: present
+  # ansible: absent
+
+# default shell used when no user-specific shell is defined
+user_management_default_shell: "/bin/bash"
+
+# enforce group list as stated in user_management_users if set to 'no'
+user_management_append_user_groups: no
+
+# Controls the default user password update policy; see ansible.builtin.user
+user_management_update_password_default: always

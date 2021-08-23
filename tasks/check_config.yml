@@ -1,0 +1,198 @@
+---
+
+# check user_management_groups format
+- name: check that user_management_groups is a list
+  ansible.builtin.assert:
+    that:
+      - user_management_groups is defined
+      - user_management_groups is iterable
+    quiet: yes
+
+- name: check that contained groups have correct name
+  ansible.builtin.assert:
+    that:
+      - item.name is defined
+      - item.name is string
+    quiet: yes
+  loop: "{{ user_management_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: check that contained groups have correct gid
+  ansible.builtin.assert:
+    that:
+      - item.gid is number
+      - item.gid > 0
+    quiet: yes
+  loop: "{{ user_management_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.gid is defined
+
+- name: check that contained groups have correct system flag
+  ansible.builtin.assert:
+    that:
+      - item.system is boolean
+    quiet: yes
+  loop: "{{ user_management_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.system is defined
+
+- name: check that contained groups have correct state
+  ansible.builtin.assert:
+    that:
+      - item.state is string
+      - item.state in ["present", "absent"]
+    quiet: yes
+  loop: "{{ user_management_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - item.state is defined
+
+# check user_management_machine_users format
+- name: check that user_management_machine_users has correct format
+  ansible.builtin.assert:
+    that:
+      - item.key is defined
+      - item.key is string
+      - item.value is string
+      - item.value in ["present", "absent"]
+    quiet: yes
+  loop: "{{ user_management_machine_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+# check user_management_users format
+- name: check that users have correct name
+  ansible.builtin.assert:
+    that:
+      - item.key is defined
+      - item.key is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: check that users have correct uid, comment, group, and groups
+  ansible.builtin.assert:
+    that:
+      - item.value.uid is defined
+      - item.value.uid is number
+      - item.value.uid > 0
+      - item.value.comment is defined
+      - item.value.comment is string
+      - item.value.group is defined
+      - item.value.group is string
+      - item.value.groups is defined
+      - item.value.groups is iterable
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: check that users have correct groups format
+  ansible.builtin.assert:
+    that:
+      - item.1 is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items | subelements('value.groups') }}"
+  loop_control:
+    label: "{{ item.0.key }} -> {{ item.1 }}"
+
+- name: check that users have correct password
+  ansible.builtin.assert:
+    that:
+      - item.key is string
+      - item.value.sha512 is string
+    quiet: yes
+  loop: "{{ user_management_user_passwords | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - user_management_user_passwords is defined
+    - item.value.sha512 is defined
+
+- name: check that users have correct update_password
+  ansible.builtin.assert:
+    that:
+      - item.value.update_password is string
+      - item.value.update_password in ["always", "on_create"]
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value.update_password is defined
+
+- name: check that users have correct shell
+  ansible.builtin.assert:
+    that:
+      - item.value.shell is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value.shell is defined
+
+- name: check that users have correct pub_key
+  ansible.builtin.assert:
+    that:
+      - item.value.pub_key is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value.pub_key is defined
+
+- name: check that users have correct email
+  ansible.builtin.assert:
+    that:
+      - item.value.email is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value.email is defined
+
+# check user_management_sudo_groups format
+- name: check that user_management_sudo_groups has correct format
+  ansible.builtin.assert:
+    that:
+      - item.key is defined
+      - item.key is string
+      - item.value is string
+      - item.value in ["present", "absent"]
+    quiet: yes
+  loop: "{{ user_management_sudo_groups | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+
+- name: check that user_management_default_shell is a string
+  ansible.builtin.assert:
+    that:
+      - user_management_default_shell is defined
+      - user_management_default_shell is string
+    quiet: yes
+
+- name: check that user_management_append_user_groups is a boolean
+  ansible.builtin.assert:
+    that:
+      - user_management_append_user_groups is defined
+      - user_management_append_user_groups is boolean
+    quiet: yes
+
+- name: check that user_management_update_password_default is a boolean
+  ansible.builtin.assert:
+    that:
+      - user_management_update_password_default is defined
+      - user_management_update_password_default is string
+      - user_management_update_password_default in ["always", "on_create"]
+    quiet: yes

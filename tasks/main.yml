@@ -1,0 +1,58 @@
+---
+# tasks file for user-management
+
+- name: check config
+  ansible.builtin.import_tasks: check_config.yml
+  run_once: yes
+  delegate_to: localhost
+
+- name: add groups
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit) }}"
+    system: "{{ item.system | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ user_management_groups }}"
+
+- name: add user specific groups
+  ansible.builtin.group:
+    name: "{{ item.key }}"
+    gid: "{{ user_management_users[item.key].uid }}"
+    state: "{{ item.value }}"
+  loop: "{{ user_management_machine_users | dict2items }}"
+
+- name: add sudo groups
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: "{{ item.value }}"
+    create: yes
+    regexp: "^%{{ item.key }}"
+    line: "%sysops ALL=(ALL) ALL"
+    validate: "visudo -cf %s"
+  loop: "{{ user_management_sudo_groups | dict2items }}"
+
+- name: add users
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    uid: "{{ user_management_users[item.key].uid }}"
+    comment: "{{ user_management_users[item.key].comment }}"
+    group: "{{ user_management_users[item.key].group }}"
+    groups: "{{ user_management_users[item.key].groups }}"
+    append: "{{ user_management_append_user_groups }}"
+    password: "{{ user_management_user_passwords[item.key].sha512 | default(omit) }}"
+    update_password: "{{ user_management_users[item.key].update_password | default(user_management_update_password_default) }}"
+    shell: "{{ user_management_users[item.key].shell | default(user_management_default_shell) }}"
+    state: "{{ item.value }}"
+  loop: "{{ user_management_machine_users | dict2items }}"
+
+- name: add ssh key
+  ansible.builtin.authorized_key:
+    user: "{{ item.key }}"
+    key: "{{ user_management_users[item.key].pub_key }}"
+  loop: "{{ user_management_machine_users | dict2items }}"
+  when: item.value == "present" and user_management_users[item.key].pub_key is defined
+
+- name: setup forward mail address
+  ansible.builtin.include_tasks: set_forward_mail_address.yml
+  loop: "{{ user_management_machine_users | dict2items }}"
+  when: item.value == "present" and user_management_users[item.key].mail is defined

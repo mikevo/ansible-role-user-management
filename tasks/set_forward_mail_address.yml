@@ -1,11 +1,11 @@
 ---
-- name: setup forward mail address | find home dir
+- name: setup forward mail address | find home dir of {{ item.key }}
   user:
     name: "{{ item.key }}"
     state: present
   register: currently_registered_user
 
-- name: setup forward mail address | add address to  ~/.forward file
+- name: setup forward mail address | add address to ~/.forward file for {{ item.key }}
   lineinfile:
     path: "{{ currently_registered_user.home }}/.forward"
     regexp: ".*@.*"

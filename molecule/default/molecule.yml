@@ -5,27 +5,32 @@ driver:
   name: docker
 platforms:
   - name: user-management-centos7
-    image: "geerlingguy/docker-centos7-ansible:latest"
+    image: "centos:7"
     pre_build_image: true
-  - name: user-management-centos8
-    image: "geerlingguy/docker-centos8-ansible:latest"
-    pre_build_image: true
-  - name: user-management-debian9
-    image: "geerlingguy/docker-debian9-ansible:latest"
+  - name: user-management-rockylinux8
+    image: "rockylinux:8"
     pre_build_image: true
   - name: user-management-debian10
-    image: "geerlingguy/docker-debian10-ansible:latest"
+    image: "debian:10"
     pre_build_image: true
-  - name: user-management-fedora34
-    image: "geerlingguy/docker-fedora34-ansible:latest"
+  - name: user-management-debian11
+    image: "debian:11"
     pre_build_image: true
-  - name: user-management-ubuntu1804
-    image: "geerlingguy/docker-ubuntu1804-ansible:latest"
+  - name: user-management-debian-testing
+    image: "debian:testing"
+    pre_build_image: true
+  - name: user-management-fedora35
+    image: "fedora:35"
     pre_build_image: true
   - name: user-management-ubuntu2004
-    image: "geerlingguy/docker-ubuntu2004-ansible:latest"
+    image: "ubuntu:20.04"
+    pre_build_image: true
+  - name: user-management-ubuntu2204
+    image: "ubuntu:22.04"
     pre_build_image: true
 provisioner:
   name: ansible
-verifier:
-  name: ansible
+lint: |
+  set -e
+  yamllint .
+  flake8

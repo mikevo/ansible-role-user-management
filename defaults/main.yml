@@ -13,6 +13,7 @@ user_management_users: {}
   #   pub_key: "ssh-rsa ..."
   #   mail: "ansible@example.com"  # optional
   #   update_password: on_create  # optional
+  #   home_mode: "0750"  # optional
 
 # defines all groups
 user_management_groups: []
@@ -37,6 +38,9 @@ user_management_machine_users: {}
 
 # default shell used when no user-specific shell is defined
 user_management_default_shell: "/bin/bash"
+
+# default user home dir mode
+user_management_default_home_mode: "0700"
 
 # enforce group list as stated in user_management_users if set to 'no'
 user_management_append_user_groups: no

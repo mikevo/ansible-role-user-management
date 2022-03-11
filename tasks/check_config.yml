@@ -161,6 +161,17 @@
   when:
     - item.value.email is defined
 
+- name: check that users have correct home_mode
+  ansible.builtin.assert:
+    that:
+      - item.value.home_mode is string
+    quiet: yes
+  loop: "{{ user_management_users | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when:
+    - item.value.home_mode is defined
+
 # check user_management_sudo_groups format
 - name: check that user_management_sudo_groups has correct format
   ansible.builtin.assert:
@@ -180,6 +191,13 @@
     that:
       - user_management_default_shell is defined
       - user_management_default_shell is string
+    quiet: yes
+
+- name: check that user_management_default_home_mode is a string
+  ansible.builtin.assert:
+    that:
+      - user_management_default_home_mode is defined
+      - user_management_default_home_mode is string
     quiet: yes
 
 - name: check that user_management_append_user_groups is a boolean

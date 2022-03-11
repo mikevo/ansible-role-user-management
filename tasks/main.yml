@@ -31,18 +31,8 @@
     validate: "visudo -cf %s"
   loop: "{{ user_management_sudo_groups | dict2items }}"
 
-- name: add users
-  ansible.builtin.user:
-    name: "{{ item.key }}"
-    uid: "{{ user_management_users[item.key].uid }}"
-    comment: "{{ user_management_users[item.key].comment }}"
-    group: "{{ user_management_users[item.key].group }}"
-    groups: "{{ user_management_users[item.key].groups }}"
-    append: "{{ user_management_append_user_groups }}"
-    password: "{{ user_management_user_passwords[item.key].sha512 | default(omit) }}"
-    update_password: "{{ user_management_users[item.key].update_password | default(user_management_update_password_default) }}"
-    shell: "{{ user_management_users[item.key].shell | default(user_management_default_shell) }}"
-    state: "{{ item.value }}"
+- name: add users and their home directory
+  ansible.builtin.include_tasks: setup_user.yml
   loop: "{{ user_management_machine_users | dict2items }}"
 
 - name: add ssh key

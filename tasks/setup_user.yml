@@ -1,0 +1,22 @@
+---
+
+- name: add user {{ item.key }}
+  ansible.builtin.user:
+    name: "{{ item.key }}"
+    uid: "{{ user_management_users[item.key].uid }}"
+    comment: "{{ user_management_users[item.key].comment }}"
+    group: "{{ user_management_users[item.key].group }}"
+    groups: "{{ user_management_users[item.key].groups }}"
+    append: "{{ user_management_append_user_groups }}"
+    password: "{{ user_management_user_passwords[item.key].sha512 | default(omit) }}"
+    update_password: "{{ user_management_users[item.key].update_password | default(user_management_update_password_default) }}"
+    shell: "{{ user_management_users[item.key].shell | default(user_management_default_shell) }}"
+    state: "{{ item.value }}"
+  register: user_registered
+
+- name: set home directory mode for {{ item.key }}
+  ansible.builtin.file:
+    path: "{{ user_registered.home }}"
+    state: directory
+    mode: "{{ user_management_users[item.key].home_mode | default(user_management_default_home_mode) }}"
+  when: user_registered.home is defined

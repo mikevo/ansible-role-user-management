@@ -27,6 +27,7 @@
         pub_key: "ssh-rsa ..."
         mail: "ansible@example.com"  # optional
         update_password: on_create  # optional
+        home_mode: "0750"  # optional
       ansible2:
         uid: 10001
         comment: "Default user 2"
@@ -36,6 +37,17 @@
         shell: "/bin/bash"  # optional
         pub_key: "ssh-rsa ..."
         mail: "ansible1@example.com"  # optional
+      ansible3:
+        uid: 10003
+        comment: "Default user 3"
+        group: sysops
+        groups:
+          - sudo
+          - admins
+        shell: "/bin/bash"  # optional
+        pub_key: "ssh-rsa ..."
+        mail: "ansible@example.com"  # optional
+        update_password: on_create  # optional
 
     user_management_machine_users:
       ansible: present

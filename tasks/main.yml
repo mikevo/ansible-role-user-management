@@ -35,13 +35,6 @@
   ansible.builtin.include_tasks: setup_user.yml
   loop: "{{ user_management_machine_users | dict2items }}"
 
-- name: add ssh key
-  ansible.builtin.authorized_key:
-    user: "{{ item.key }}"
-    key: "{{ user_management_users[item.key].pub_key }}"
-  loop: "{{ user_management_machine_users | dict2items }}"
-  when: item.value == "present" and user_management_users[item.key].pub_key is defined
-
 - name: setup forward mail address
   ansible.builtin.include_tasks: set_forward_mail_address.yml
   loop: "{{ user_management_machine_users | dict2items }}"

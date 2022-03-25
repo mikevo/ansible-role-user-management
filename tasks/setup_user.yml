@@ -20,3 +20,9 @@
     state: directory
     mode: "{{ user_management_users[item.key].home_mode | default(user_management_default_home_mode) }}"
   when: user_registered.home is defined
+
+- name: add ssh key for {{ item.key }}
+  ansible.builtin.authorized_key:
+    user: "{{ item.key }}"
+    key: "{{ user_management_users[item.key].pub_key }}"
+  when: item.value == "present" and user_management_users[item.key].pub_key is defined

@@ -26,3 +26,11 @@
     user: "{{ item.key }}"
     key: "{{ user_management_users[item.key].pub_key }}"
   when: item.value == "present" and user_management_users[item.key].pub_key is defined
+
+- name: setup oh-my-zsh for {{ item.key }}
+  ansible.builtin.include_tasks: setup_oh_my_zsh.yml
+  vars:
+    oh_my_zsh_user: "{{ item.key }}"
+  when:
+    - user_management_users[item.key].oh_my_zsh is defined
+    - user_management_users[item.key].oh_my_zsh is true

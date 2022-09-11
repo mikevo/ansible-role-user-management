@@ -48,11 +48,24 @@
         pub_key: "ssh-rsa ..."
         mail: "ansible@example.com"  # optional
         update_password: on_create  # optional
+      ansible4:
+        uid: 10004
+        comment: "Default user 4"
+        group: sysops
+        groups:
+          - sudo
+          - admins
+        shell: "/bin/zsh"  # optional
+        pub_key: "ssh-rsa ..."
+        mail: "ansible@example.com"  # optional
+        update_password: on_create  # optional
+        oh_my_zsh: true  # optional
 
     user_management_machine_users:
       ansible: present
       ansible2: absent
       ansible3: present
+      ansible4: present
 
   tasks:
     - name: "Include user-management"

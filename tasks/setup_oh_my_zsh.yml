@@ -1,0 +1,42 @@
+---
+- name: gather user info for {{ oh_my_zsh_user }}
+  ansible.builtin.user:
+    name: "{{ oh_my_zsh_user }}"
+    state: present
+  register: oh_my_zsh_user_info
+
+- name: install oh-my-zsh for {{ oh_my_zsh_user }}
+  become: true
+  become_user: "{{ oh_my_zsh_user }}"
+  ansible.builtin.shell: "curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh -"
+  args:
+    chdir: "{{ oh_my_zsh_user_info.home }}"
+    creates: "{{ oh_my_zsh_user_info.home }}/.oh-my-zsh/oh-my-zsh.sh"
+
+- name: add zsh plugins for {{ oh_my_zsh_user }}
+  become: true
+  become_user: "{{ oh_my_zsh_user }}"
+  ansible.builtin.git:
+    repo: "https://github.com/zsh-users/{{ plugin_item }}.git"
+    dest: "{{ oh_my_zsh_user_info.home }}/.oh-my-zsh/custom/plugins/{{ plugin_item }}"
+    force: yes
+  loop:
+    - zsh-autosuggestions
+    - zsh-syntax-highlighting
+  loop_control:
+    loop_var: plugin_item
+
+- name: set oh-my-zsh settings in .zshrc for {{ oh_my_zsh_user }}
+  become: true
+  become_user: "{{ oh_my_zsh_user }}"
+  ansible.builtin.lineinfile:
+    path: "{{ oh_my_zsh_user_info.home }}/.zshrc"
+    regexp: "^{{ setting_item.key }}="
+    line: "{{ setting_item.key }}={{ setting_item.value }}"
+  loop:
+    - key: ZSH_THEME
+      value: "\"agnoster\""
+    - key: plugins
+      value: "(git zsh-syntax-highlighting zsh-autosuggestions systemd)"
+  loop_control:
+    loop_var: setting_item

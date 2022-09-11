@@ -14,6 +14,7 @@ user_management_users: {}
   #   mail: "ansible@example.com"  # optional
   #   update_password: on_create  # optional
   #   home_mode: "0750"  # optional
+  #   oh_my_zsh: true  # optional (default is false)
 
 # defines all groups
 user_management_groups: []

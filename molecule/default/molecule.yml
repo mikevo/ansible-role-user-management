@@ -34,3 +34,4 @@ lint: |
   set -e
   yamllint .
   flake8
+role_name_check: 1

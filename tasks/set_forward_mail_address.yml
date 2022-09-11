@@ -1,5 +1,5 @@
 ---
-- name: setup forward mail address | find home dir of {{ item.key }}
+- name: setup forward mail address | find home dir for {{ item.key }}
   user:
     name: "{{ item.key }}"
     state: present

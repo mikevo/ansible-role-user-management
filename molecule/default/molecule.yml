@@ -7,8 +7,8 @@ platforms:
   - name: user-management-centos7
     image: "centos:7"
     pre_build_image: true
-  - name: user-management-rockylinux8
-    image: "rockylinux:8"
+  - name: user-management-almalinux8
+    image: "almalinux:8"
     pre_build_image: true
   - name: user-management-debian10
     image: "debian:10"

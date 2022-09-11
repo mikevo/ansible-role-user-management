@@ -19,8 +19,8 @@ platforms:
   - name: user-management-debian-testing
     image: "debian:testing"
     pre_build_image: true
-  - name: user-management-fedora35
-    image: "fedora:35"
+  - name: user-management-fedora36
+    image: "fedora:36"
     pre_build_image: true
   - name: user-management-ubuntu2004
     image: "ubuntu:20.04"

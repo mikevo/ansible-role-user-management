@@ -16,10 +16,10 @@ platforms:
   - name: user-management-debian11
     image: "debian:11"
     pre_build_image: true
-  - name: user-management-debian-testing
-    image: "debian:testing"
+  - name: user-management-debian12
+    image: "debian:12"
     pre_build_image: true
-  - name: user-management-fedora36
+  - name: user-management-nagement-fedora36
     image: "fedora:36"
     pre_build_image: true
   - name: user-management-ubuntu2004
